@@ -58,3 +58,6 @@ migrate-up: submodule submodule-update ## Run migrations
 
 migrate-down: ## Rollback migrations
 	$(MIGRATE) down
+
+migrate-create: ## Create migration file with name
+	migrate create -ext sql -dir migrations/migrate_sql -seq -digits 7 "migrate_name"
