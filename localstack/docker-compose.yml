@@ -17,6 +17,5 @@ services:
   redis:
     image: redis
     container_name: redis-mates
-    command: redis-server --requirepass wu1ohr5Eipun8Eim
     ports:
       - 6379:6379

@@ -31,7 +31,7 @@ type HTTP struct {
 type Postgres struct {
 	Host         string        `mapstructure:"HOST"          default:"localhost"`
 	Port         string        `mapstructure:"PORT"          default:"5432"`
-	Name         string        `mapstructure:"NAME"          default:"erp-db"`
+	Name         string        `mapstructure:"NAME"          default:"mates-db"`
 	User         string        `mapstructure:"USER"          default:"postgres"`
 	Password     string        `mapstructure:"PASSWORD"      default:"12345"`
 	PoolSize     int           `mapstructure:"POOL_SIZE"     default:"10"`
