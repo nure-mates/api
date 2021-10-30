@@ -1,4 +1,4 @@
-// Package classification ERP API.
+// Package classification NURE API.
 //
 // API for UI
 //

@@ -70,7 +70,7 @@ definitions:
     x-go-package: github.com/nure-mates/api/src/docs
 info:
   description: API for UI
-  title: ERP API.
+  title: NURE API.
   version: 0.0.1
 paths:
   /login:
