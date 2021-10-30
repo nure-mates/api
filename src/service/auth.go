@@ -38,7 +38,7 @@ func (s *Service) Login(ctx context.Context, loginReq models.LoginRequest) (resp
 
 	user, err := s.checkUser(ctx, tokenInfo.Claims["email"].(string))
 	if err != nil {
-		log.Error("login error, check ERP user ", err)
+		log.Error("login error, check user ", err)
 		return resp, err
 	}
 
