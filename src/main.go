@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 	"os/signal"
+	"strconv"
 	"strings"
 	"sync"
 	"syscall"
@@ -23,7 +24,11 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
+	port, err := strconv.Atoi(os.Getenv("PORT"))
+	if err != nil {
+		log.WithError(err).Fatal("no port os var")
+	}
+	cfg.HTTPConfig.Port = port
 	// init logger
 	initLogger(cfg.LogLevel)
 
