@@ -8,6 +8,7 @@ import (
 
 	"github.com/nure-mates/api/src/config"
 	"github.com/nure-mates/api/src/models"
+	"github.com/nure-mates/api/src/storage/redis"
 )
 
 var (
@@ -17,6 +18,7 @@ var (
 
 type Service struct {
 	cfg         *config.Config
+	redis       *redis.Client
 	authRepo    AuthRepo
 	profileRepo ProfileRepo
 }
