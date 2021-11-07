@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"context"
+	"fmt"
 	"github.com/nure-mates/api/src/models"
 )
 
@@ -20,6 +21,8 @@ func (p *ProfileRepo) GetProfilesByEmail(ctx context.Context, email string) ([]m
 		Model(&res).
 		Where("?TableAlias.email = ?", email).
 		Scan(ctx)
-
+	if err != nil {
+		fmt.Println("ThereThere ", err)
+	}
 	return res, toServiceError(err)
 }

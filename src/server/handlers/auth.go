@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"net/http"
-
 	log "github.com/sirupsen/logrus"
 
 	"github.com/nure-mates/api/src/models"
