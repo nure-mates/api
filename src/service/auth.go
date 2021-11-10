@@ -171,7 +171,11 @@ func (s *Service) checkUser(ctx context.Context, email string) (user models.User
 		}
 	}
 
-	user, err = s.profileRepo.AddNewProfile(ctx, user)
+	user, err = s.profileRepo.AddNewProfile(ctx, models.User{
+		Email:     email,
+		Archived:  false,
+		CreatedAt: time.Now(),
+	})
 	if err != nil {
 		return user, err
 	}
