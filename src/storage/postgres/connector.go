@@ -29,7 +29,6 @@ func New(ctx context.Context, wg *sync.WaitGroup, mainCfg *config.Postgres) (*Po
 		pgdriver.WithDatabase(mainCfg.Name),
 		pgdriver.WithReadTimeout(mainCfg.ReadTimeout),
 		pgdriver.WithWriteTimeout(mainCfg.WriteTimeout),
-		pgdriver.WithInsecure(false),
 	)
 
 	sqldb := sql.OpenDB(pgconn)
