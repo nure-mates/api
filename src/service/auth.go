@@ -29,8 +29,6 @@ var (
 )
 
 func (s *Service) Login(ctx context.Context, loginReq models.LoginRequest) (resp models.LoginResponse, err error) {
-	log.Print("id_token: ", loginReq.IDToken)
-	log.Print("google_aud: ", s.cfg.GoogleAud)
 	tokenInfo, err := verifyIDToken(ctx, loginReq.IDToken, s.cfg.GoogleAud)
 	if err != nil {
 		log.Error("login error, validate ID token ", err)
@@ -162,23 +160,21 @@ func verifyIDToken(ctx context.Context, idToken, aud string) (*idtoken.Payload, 
 }
 
 func (s *Service) checkUser(ctx context.Context, email string) (user models.User, err error) {
-	userCandidates, err := s.profileRepo.GetProfilesByEmail(ctx, email)
+	userCandidate, err := s.profileRepo.GetProfilesByEmail(ctx, email)
 	if err != nil {
 		return user, err
 	}
 
-	for i := range userCandidates {
-		if !userCandidates[i].Archived {
-			return userCandidates[i], nil
-		}
+	if userCandidate.ID != 0 {
+		return userCandidate, nil
 	}
 
 	user, err = s.profileRepo.AddNewProfile(ctx, models.User{
 		Email:     email,
-		Archived:  false,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	})
+
 	if err != nil {
 		return user, err
 	}

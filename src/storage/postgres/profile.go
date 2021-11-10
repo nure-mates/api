@@ -14,13 +14,18 @@ func (p *Postgres) NewProfileRepo() *ProfileRepo {
 	return &ProfileRepo{p}
 }
 
-func (p *ProfileRepo) GetProfilesByEmail(ctx context.Context, email string) ([]models.User, error) {
-	var res []models.User
+func (p *ProfileRepo) GetProfilesByEmail(ctx context.Context, email string) (models.User, error) {
+	var res models.User
 
 	err := p.DB.NewSelect().
 		Model(&res).
 		Where("?TableAlias.email = ?", email).
+		Limit(1).
 		Scan(ctx)
+
+	if toServiceError(err) != models.ErrNotFound {
+		return res, nil
+	}
 
 	return res, toServiceError(err)
 }
