@@ -12,4 +12,5 @@ type User struct {
 	Archived  bool      `json:"-"`
 	IsNew     bool      `json:"-" bun:"-"`
 	CreatedAt time.Time `json:"-"`
+	UpdatedAt time.Time `json:"-"`
 }
