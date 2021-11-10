@@ -8,7 +8,6 @@ import (
 
 	"github.com/nure-mates/api/src/config"
 	"github.com/nure-mates/api/src/models"
-	"github.com/nure-mates/api/src/storage/redis"
 )
 
 var (
@@ -18,20 +17,17 @@ var (
 
 type Service struct {
 	cfg         *config.Config
-	redis       *redis.Client
 	authRepo    AuthRepo
 	profileRepo ProfileRepo
 }
 
 func New(
 	cfg *config.Config,
-	rds *redis.Client,
 	aur AuthRepo,
 	pr ProfileRepo,
 ) *Service {
 	once.Do(func() {
 		service = &Service{
-			redis:       rds,
 			cfg:         cfg,
 			authRepo:    aur,
 			profileRepo: pr,
@@ -54,4 +50,5 @@ type AuthRepo interface {
 
 type ProfileRepo interface {
 	GetProfilesByEmail(ctx context.Context, email string) ([]models.User, error)
+	AddNewProfile(ctx context.Context, newUser models.User) (models.User, error)
 }

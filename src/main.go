@@ -10,7 +10,6 @@ import (
 
 	"github.com/nure-mates/api/src/server/handlers"
 	"github.com/nure-mates/api/src/service"
-	"github.com/nure-mates/api/src/storage/redis"
 
 	log "github.com/sirupsen/logrus"
 
@@ -42,14 +41,8 @@ func main() {
 		log.WithError(err).Fatal("postgres connection error")
 	}
 
-	redisClient, err := redis.New(&cfg.RedisCfg)
-	if err != nil {
-		log.WithError(err).Fatal("redis connection error")
-	}
-
 	srv := service.New(
 		&cfg,
-		redisClient,
 		db.NewAuthRepo(),
 		db.NewProfileRepo(),
 	)

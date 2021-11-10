@@ -13,7 +13,6 @@ import (
 	"google.golang.org/api/idtoken"
 
 	"github.com/nure-mates/api/src/models"
-	"github.com/nure-mates/api/src/storage/redis"
 )
 
 const hoursInDay = 24
@@ -98,11 +97,6 @@ func (s *Service) RefreshToken(ctx context.Context, oldTokens *models.TokenPair)
 		return nil, ErrTokenClaimsInvalid
 	}
 
-	err = s.checkBlackList(accessClaims.TokenID.String())
-	if err != nil {
-		return nil, ErrTokenInvalid
-	}
-
 	session, err := s.authRepo.GetSessionByTokenID(ctx, accessClaims.TokenID)
 	if err != nil {
 		return nil, ErrSessionNotFound
@@ -177,7 +171,12 @@ func (s *Service) checkUser(ctx context.Context, email string) (user models.User
 		}
 	}
 
-	return user, models.ErrNotFound
+	user, err = s.profileRepo.AddNewProfile(ctx, user)
+	if err != nil {
+		return user, err
+	}
+
+	return user, nil
 }
 
 // GenerateAccess generates token with claims.
@@ -239,21 +238,7 @@ func (s *Service) Revoke(accessToken string) (*models.Claims, error) {
 		return nil, ErrTokenClaimsInvalid
 	}
 
-	err = s.AddToBlacklist(claims.TokenID.String(), claims.TTL())
-	if err != nil {
-		return nil, err
-	}
-
 	return claims, nil
-}
-
-// AddToBlacklist adds token to the blacklist.
-func (s *Service) AddToBlacklist(tokenID string, ttl int64) error {
-	if ttl <= 0 {
-		ttl = int64(s.cfg.AccessTokenTTL)
-	}
-
-	return s.redis.Set(redis.TokenBlackListKey(tokenID), []byte{}, ttl)
 }
 
 // generateRandomString returns a URL-safe, base64 encoded securely generated random string.

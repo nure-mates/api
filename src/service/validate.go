@@ -7,7 +7,6 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/nure-mates/api/src/models"
-	"github.com/nure-mates/api/src/storage/redis"
 )
 
 // Token error list.
@@ -29,10 +28,6 @@ func (s *Service) Validate(accessToken string) (*models.UserSession, error) {
 		return nil, ErrTokenInvalid
 	}
 
-	if err := s.checkBlackList(claims.TokenID.String()); err != nil {
-		return nil, err
-	}
-
 	return &models.UserSession{
 		UserID:  claims.UserID,
 		TokenID: claims.TokenID,
@@ -43,19 +38,6 @@ func (s *Service) Validate(accessToken string) (*models.UserSession, error) {
 func (s *Service) ValidateExternalAPIToken(token string) error {
 	if subtle.ConstantTimeCompare([]byte(token), []byte(s.cfg.ExternalAPIToken)) != 1 {
 		return ErrTokenInvalid
-	}
-
-	return nil
-}
-
-func (s *Service) checkBlackList(tokenID string) error {
-	res, err := s.redis.Get(redis.TokenBlackListKey(tokenID))
-	if err != nil {
-		return err
-	}
-
-	if res != nil {
-		return ErrTokenInBlackList
 	}
 
 	return nil

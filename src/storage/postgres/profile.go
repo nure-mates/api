@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"context"
+
 	"github.com/nure-mates/api/src/models"
 )
 
@@ -22,4 +23,11 @@ func (p *ProfileRepo) GetProfilesByEmail(ctx context.Context, email string) ([]m
 		Scan(ctx)
 
 	return res, toServiceError(err)
+}
+
+func (p *ProfileRepo) AddNewProfile(ctx context.Context, newUser models.User) (models.User, error) {
+
+	_, err := p.DB.NewInsert().Model(&newUser).Exec(ctx)
+
+	return newUser, toServiceError(err)
 }
