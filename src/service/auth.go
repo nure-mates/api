@@ -175,6 +175,7 @@ func (s *Service) checkUser(ctx context.Context, email string) (user models.User
 		Email:     email,
 		Archived:  false,
 		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 	})
 	if err != nil {
 		return user, err
