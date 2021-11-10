@@ -17,7 +17,6 @@ type UserSession struct {
 	TokenID      uuid.UUID  `json:"token_id"`
 	UserID       int        `json:"user_id"`
 	RefreshToken string     `json:"refresh_token"`
-	UserRole     int        `json:"user_role"`
 	CreatedAt    *time.Time `json:"created_at"`
 	UpdatedAt    *time.Time `json:"updated_at"`
 	ExpiredAt    *time.Time `json:"expired_at"`

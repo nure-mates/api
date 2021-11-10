@@ -49,6 +49,6 @@ type AuthRepo interface {
 }
 
 type ProfileRepo interface {
-	GetProfilesByEmail(ctx context.Context, email string) ([]models.User, error)
+	GetProfilesByEmail(ctx context.Context, email string) (models.User, error)
 	AddNewProfile(ctx context.Context, newUser models.User) (models.User, error)
 }

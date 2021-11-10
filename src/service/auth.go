@@ -160,22 +160,21 @@ func verifyIDToken(ctx context.Context, idToken, aud string) (*idtoken.Payload, 
 }
 
 func (s *Service) checkUser(ctx context.Context, email string) (user models.User, err error) {
-	userCandidates, err := s.profileRepo.GetProfilesByEmail(ctx, email)
+	userCandidate, err := s.profileRepo.GetProfilesByEmail(ctx, email)
 	if err != nil {
 		return user, err
 	}
 
-	for i := range userCandidates {
-		if !userCandidates[i].Archived {
-			return userCandidates[i], nil
-		}
+	if userCandidate.ID != 0 {
+		return userCandidate, nil
 	}
 
 	user, err = s.profileRepo.AddNewProfile(ctx, models.User{
 		Email:     email,
-		Archived:  false,
 		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 	})
+
 	if err != nil {
 		return user, err
 	}
