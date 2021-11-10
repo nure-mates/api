@@ -29,6 +29,8 @@ var (
 )
 
 func (s *Service) Login(ctx context.Context, loginReq models.LoginRequest) (resp models.LoginResponse, err error) {
+	log.Print("id_token: ", loginReq.IDToken)
+	log.Print("google_aud: ", s.cfg.GoogleAud)
 	tokenInfo, err := verifyIDToken(ctx, loginReq.IDToken, s.cfg.GoogleAud)
 	if err != nil {
 		log.Error("login error, validate ID token ", err)
