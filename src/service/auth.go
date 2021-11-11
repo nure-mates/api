@@ -79,12 +79,14 @@ func (s *Service) Login(ctx context.Context, loginReq models.LoginRequest) (resp
 func (s *Service) GetSpotifyData(r *http.Request) (string, error) {
 	token, err := s.spotifyAuth.Token(r.Context(), MockState, r)
 	if err != nil {
+		log.Errorf("failed to get token: %v", err)
 		return "", errors.New("couldn't get token")
 	}
 
 	client := spotify.New(s.spotifyAuth.Client(r.Context(), token))
 	user, err := client.CurrentUser(context.TODO())
 	if err != nil {
+		log.Errorf("failed to get user: %v", err)
 		return "", errors.Wrap(err, "failed to get user")
 	}
 
