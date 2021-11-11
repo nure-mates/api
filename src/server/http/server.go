@@ -82,6 +82,8 @@ func (s *Server) buildHandler() (http.Handler, error) {
 	// public routes
 	v1Router.Handle("/health", publicChain.ThenFunc(healthcheck.Health)).Methods(http.MethodGet)
 	v1Router.Handle("/login", publicChain.ThenFunc(s.auh.Login)).Methods(http.MethodPost)
+	v1Router.Handle("/spotify-login", publicChain.ThenFunc(s.auh.SpotifyLogin)).Methods(http.MethodGet)
+	v1Router.Handle("/spotify-callback", publicChain.ThenFunc(s.auh.SpotifyCallback)).Methods()
 	v1Router.Handle("/token", publicChain.ThenFunc(s.auh.TokenRefresh)).Methods(http.MethodPost)
 
 	// private routes

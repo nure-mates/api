@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	spotifyauth "github.com/zmb3/spotify/v2/auth"
 	"os"
 	"os/signal"
 	"strconv"
@@ -49,10 +50,13 @@ func main() {
 		log.WithError(err).Fatal("postgres connection error")
 	}
 
+	auth := spotifyauth.New(spotifyauth.WithRedirectURL("REDIRECT_URL"), spotifyauth.WithScopes(spotifyauth.ScopeUserReadPrivate))
+
 	srv := service.New(
 		&cfg,
 		db.NewAuthRepo(),
 		db.NewProfileRepo(),
+		auth,
 	)
 
 	httpSrv, err := http.New(

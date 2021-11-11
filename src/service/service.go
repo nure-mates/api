@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	spotifyauth "github.com/zmb3/spotify/v2/auth"
 	"sync"
 
 	"github.com/google/uuid"
@@ -19,18 +20,21 @@ type Service struct {
 	cfg         *config.Config
 	authRepo    AuthRepo
 	profileRepo ProfileRepo
+	spotifyAuth *spotifyauth.Authenticator
 }
 
 func New(
 	cfg *config.Config,
 	aur AuthRepo,
 	pr ProfileRepo,
+	authenticator *spotifyauth.Authenticator,
 ) *Service {
 	once.Do(func() {
 		service = &Service{
 			cfg:         cfg,
 			authRepo:    aur,
 			profileRepo: pr,
+			spotifyAuth: authenticator,
 		}
 	})
 
