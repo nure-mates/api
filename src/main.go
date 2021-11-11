@@ -55,6 +55,7 @@ func main() {
 		log.WithError(err).Fatal("got empty spotify redirect url")
 	}
 
+	log.Infof("redirect is: %s", spotifyRedirectURL)
 	auth := spotifyauth.New(spotifyauth.WithRedirectURL(spotifyRedirectURL), spotifyauth.WithScopes(spotifyauth.ScopeUserReadPrivate))
 
 	srv := service.New(
