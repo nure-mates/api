@@ -50,7 +50,12 @@ func main() {
 		log.WithError(err).Fatal("postgres connection error")
 	}
 
-	auth := spotifyauth.New(spotifyauth.WithRedirectURL("REDIRECT_URL"), spotifyauth.WithScopes(spotifyauth.ScopeUserReadPrivate))
+	spotifyRedirectURL := os.Getenv("REDIRECT_URI")
+	if spotifyRedirectURL == "" {
+		log.WithError(err).Fatal("got empty spotify redirect url")
+	}
+
+	auth := spotifyauth.New(spotifyauth.WithRedirectURL(spotifyRedirectURL), spotifyauth.WithScopes(spotifyauth.ScopeUserReadPrivate))
 
 	srv := service.New(
 		&cfg,
