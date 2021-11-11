@@ -56,7 +56,7 @@ func main() {
 	}
 
 	log.Infof("redirect is: %s", spotifyRedirectURL)
-	auth := spotifyauth.New(spotifyauth.WithRedirectURL(spotifyRedirectURL), spotifyauth.WithScopes(spotifyauth.ScopeUserReadPrivate))
+	auth := spotifyauth.New(spotifyauth.WithRedirectURL(spotifyRedirectURL), spotifyauth.WithScopes(spotifyauth.ScopeUserReadEmail))
 
 	srv := service.New(
 		&cfg,
