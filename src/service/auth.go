@@ -40,7 +40,7 @@ func (s *Service) Login(ctx context.Context, loginReq models.LoginRequest) (resp
 		return resp, err
 	}
 
-	user, err := s.checkUser(ctx, tokenInfo.Claims["email"].(string))
+	user, err := s.processUser(ctx, tokenInfo.Claims["email"].(string))
 	if err != nil {
 		log.Error("login error, check user ", err)
 		return resp, err
@@ -185,24 +185,22 @@ func verifyIDToken(ctx context.Context, idToken, aud string) (*idtoken.Payload, 
 	return payload, nil
 }
 
-func (s *Service) checkUser(ctx context.Context, email string) (user models.User, err error) {
+func (s *Service) processUser(ctx context.Context, email string) (user models.User, err error) {
 	userCandidate, err := s.profileRepo.GetProfilesByEmail(ctx, email)
 	if err != nil {
+		if err == models.ErrNotFound {
+			user, err = s.profileRepo.AddNewProfile(ctx, models.User{
+				Email:     email,
+				CreatedAt: time.Now(),
+				UpdatedAt: time.Now(),
+			})
+			return user, err
+		}
 		return user, err
 	}
 
 	if userCandidate.ID != 0 {
 		return userCandidate, nil
-	}
-
-	user, err = s.profileRepo.AddNewProfile(ctx, models.User{
-		Email:     email,
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
-	})
-
-	if err != nil {
-		return user, err
 	}
 
 	return user, nil
