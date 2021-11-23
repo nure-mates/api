@@ -53,11 +53,13 @@ func main() {
 		&cfg,
 		db.NewAuthRepo(),
 		db.NewProfileRepo(),
+		db.NewRoomRepo(),
 	)
 
 	httpSrv, err := http.New(
 		&cfg.HTTPConfig,
 		handlers.NewAuthHandler(srv),
+		handlers.NewRoomHandler(srv),
 	)
 
 	if err != nil {
