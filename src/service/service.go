@@ -66,4 +66,5 @@ type RoomRepo interface {
 	GetAvailableRooms(ctx context.Context, userID int) ([]models.Room, error)
 	UpdateRoom(ctx context.Context, room *models.Room) error
 	CheckRoom(ctx context.Context, id int) (bool, error)
+	GetUsersInRoom(ctx context.Context, roomID int) ([]models.UsersRooms, error)
 }

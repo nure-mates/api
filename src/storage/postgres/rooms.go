@@ -10,16 +10,25 @@ type RoomRepo struct {
 }
 
 func (p *Postgres) NewRoomRepo() *RoomRepo {
+	p.DB.RegisterModel((*models.UsersRooms)(nil))
 	return &RoomRepo{p}
 }
 
 func (r *RoomRepo) CreateRoom(ctx context.Context, room *models.Room) error {
 	_, err := r.DB.NewInsert().
 		Model(room).
+		Returning("id").
 		Exec(ctx)
+
+	if err != nil {
+		return err
+	}
+
+	err = r.AddUserToRoom(ctx, room.ID, room.HostID)
 
 	return err
 }
+
 
 func (r *RoomRepo) GetUserRooms(ctx context.Context, userID int) ([]models.Room, error) {
 	var rooms []models.Room
@@ -41,16 +50,16 @@ func (r *RoomRepo) GetRoom(ctx context.Context, id int) (*models.Room, error) {
 		Model(&room).
 		Where("id = ?", id).
 		Scan(ctx); err != nil {
-			return nil, err
+		return nil, err
 	}
 
 	return &room, nil
 }
 
 func (r *RoomRepo) AddUserToRoom(ctx context.Context, roomID, userID int) error {
-	rel := models.UserToRoom{RoomID: roomID, UserID: userID}
+	rel := models.UsersRooms{RoomID: roomID, UserID: userID}
 	_, err := r.DB.NewInsert().
-		Model(rel).
+		Model(&rel).
 		Exec(ctx)
 	if err != nil {
 		return err
@@ -59,12 +68,12 @@ func (r *RoomRepo) AddUserToRoom(ctx context.Context, roomID, userID int) error 
 }
 
 func (r *RoomRepo) RemoveUserFromRoom(ctx context.Context, roomID, userID int) error {
-	rel := models.UserToRoom{
+	rel := models.UsersRooms{
 		UserID: userID,
 		RoomID: roomID,
 	}
 	_, err := r.DB.NewDelete().
-		Model(rel).
+		Model(&rel).
 		Where("user_id = ? AND room_id = ?", userID, roomID).
 		Exec(ctx)
 	if err != nil {
@@ -76,7 +85,7 @@ func (r *RoomRepo) RemoveUserFromRoom(ctx context.Context, roomID, userID int) e
 func (r *RoomRepo) DeleteRoom(ctx context.Context, id int) error {
 	_, err := r.DB.NewDelete().
 		Model((*models.Room)(nil)).
-		Where("room_id = ?", id).
+		Where("id = ?", id).
 		Exec(ctx)
 	if err != nil {
 		return err
@@ -86,20 +95,25 @@ func (r *RoomRepo) DeleteRoom(ctx context.Context, id int) error {
 
 func (r *RoomRepo) GetAvailableRooms(ctx context.Context, userID int) ([]models.Room, error) {
 	var rooms []models.Room
+	var usersRooms []models.UsersRooms
 
 	if err := r.DB.NewSelect().
-		Model((*models.Room)(nil)).
-		Relation("").
+		Model(&usersRooms).
+		Relation("Room").
 		Where("user_id = ?", userID).
-		Scan(ctx, &rooms); err != nil {
-			return nil, err
+		Scan(ctx); err != nil {
+		return nil, err
+	}
+
+	for i := range usersRooms {
+		rooms = append(rooms, *usersRooms[i].Room)
 	}
 	return rooms, nil
 }
 
 func (r *RoomRepo) UpdateRoom(ctx context.Context, room *models.Room) error {
 	if _, err := r.DB.NewUpdate().
-		Model(&room).
+		Model(room).
 		Where("id = ?", room.ID).
 		Exec(ctx); err != nil {
 		return err
@@ -109,7 +123,8 @@ func (r *RoomRepo) UpdateRoom(ctx context.Context, room *models.Room) error {
 }
 
 func (r *RoomRepo) CheckRoom(ctx context.Context, id int) (bool, error) {
-	userCount, err := r.DB.NewSelect().Model(&models.UserToRoom{}).ScanAndCount(ctx)
+
+	userCount, err := r.DB.NewSelect().Model((*models.UsersRooms)(nil)).Where("id = ?", id).Count(ctx)
 	if err != nil {
 		return false, err
 	}
@@ -120,3 +135,20 @@ func (r *RoomRepo) CheckRoom(ctx context.Context, id int) (bool, error) {
 	return true, nil
 }
 
+func (r *RoomRepo) GetUsersInRoom(ctx context.Context, id int) ([]models.UsersRooms, error) {
+	var users []models.UsersRooms
+	err := r.DB.NewSelect().Model(&users).Relation("User").Where("room_id = ?", id).Scan(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
+}
+
+func (r *RoomRepo) GetUser(ctx context.Context, id int) (*models.User, error) {
+	var user *models.User
+	err := r.DB.NewSelect().Model(user).Where("id = ?", id).Scan(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}

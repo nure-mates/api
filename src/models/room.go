@@ -5,11 +5,13 @@ type Room struct {
 	Name      string `json:"name"`
 	HostID    int    `json:"host_id"`
 	UserCount int    `json:"user_count" bun:"-"`
-	UserIDs   []int  `bun:"m2m:user_to_room,join:Room=User"`
+	Users   []User `bun:"m2m:users_rooms,join:User=Room"`
 }
 
-type UserToRoom struct {
+type UsersRooms struct {
 	ID     int `bun:",pk"`
-	UserID int `bun:"rel:belongs-to,join:user_id=id"`
-	RoomID int `bun:"rel:belongs-to,join:room_id=id"`
+	UserID int `json:"user_id"`
+	User   *User `bun:"rel:belongs-to,join:user_id=id"`
+	RoomID int `json:"room_id"`
+	Room   *Room `bun:"rel:belongs-to,join:room_id=id"`
 }

@@ -12,7 +12,7 @@ services:
       API_POSTGRES_USER: postgres
       POSTGRES_PASSWORD: "12345"
       API_POSTGRES_HOST: postgres
-      API_POSTGRES_PORT: "5432"
+      API_POSTGRES_PORT: "5436"
       API_POSTGRES_DB: mates-db
   redis:
     image: redis

@@ -4,7 +4,6 @@ import (
 	"context"
 	"os"
 	"os/signal"
-	"strconv"
 	"strings"
 	"sync"
 	"syscall"
@@ -27,11 +26,14 @@ func main() {
 	}
 
 	// init heroku port
-	port, err := strconv.Atoi(os.Getenv("PORT"))
-	if err != nil {
-		log.WithError(err).Fatal("no port os var")
-	}
-	cfg.HTTPConfig.Port = port
+	/*
+		port, err := strconv.Atoi(os.Getenv("PORT"))
+		if err != nil {
+			log.WithError(err).Fatal("no port os var")
+		}
+
+	*/
+	cfg.HTTPConfig.Port = 8080
 
 	// init logger
 	initLogger(cfg.LogLevel)
@@ -43,7 +45,6 @@ func main() {
 	setupGracefulShutdown(cancel)
 
 	var wg = &sync.WaitGroup{}
-
 	db, err := postgres.New(ctx, wg, &cfg.PostgresCfg)
 	if err != nil {
 		log.WithError(err).Fatal("postgres connection error")

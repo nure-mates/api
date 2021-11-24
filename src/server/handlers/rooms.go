@@ -35,7 +35,7 @@ func (h *RoomHandler) CreateRoom(w http.ResponseWriter, r *http.Request) {
 	SendEmptyResponse(w, http.StatusCreated)
 }
 
-func (h *RoomHandler) GetRoom(w http.ResponseWriter, r *http.Request)  {
+func (h *RoomHandler) GetRoom(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := strconv.Atoi(params["room-id"])
 	if err != nil {
@@ -53,7 +53,7 @@ func (h *RoomHandler) GetRoom(w http.ResponseWriter, r *http.Request)  {
 	})
 }
 
-func (h *RoomHandler) UpdateRoom(w http.ResponseWriter, r *http.Request)  {
+func (h *RoomHandler) UpdateRoom(w http.ResponseWriter, r *http.Request) {
 	room := &models.Room{}
 
 	err := UnmarshalRequest(r, room)
@@ -71,10 +71,9 @@ func (h *RoomHandler) UpdateRoom(w http.ResponseWriter, r *http.Request)  {
 }
 
 //GetUserRooms ...
-func (h *RoomHandler) GetUserRooms(w http.ResponseWriter, r *http.Request)  {
-	var userID int
-
-	err := UnmarshalRequest(r, &userID)
+func (h *RoomHandler) GetUserRooms(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	userID, err := strconv.Atoi(params["user-id"])
 	if err != nil {
 		SendEmptyResponse(w, http.StatusBadRequest)
 		return
@@ -85,11 +84,11 @@ func (h *RoomHandler) GetUserRooms(w http.ResponseWriter, r *http.Request)  {
 		return
 	}
 
-
 	SendResponse(w, http.StatusOK, rooms)
 }
+
 //GetAvailableRooms ...
-func (h *RoomHandler) GetAvailableRooms(w http.ResponseWriter, r *http.Request)  {
+func (h *RoomHandler) GetAvailableRooms(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	userID, err := strconv.Atoi(params["user-id"])
 	if err != nil {
@@ -102,14 +101,13 @@ func (h *RoomHandler) GetAvailableRooms(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-
 	SendResponse(w, http.StatusOK, rooms)
 }
 
 //AddUserToRoom ...
-func (h *RoomHandler) AddUserToRoom(w http.ResponseWriter, r *http.Request)  {
+func (h *RoomHandler) AddUserToRoom(w http.ResponseWriter, r *http.Request) {
 	var (
-		roomUserIDs models.UserToRoom
+		roomUserIDs models.UsersRooms
 	)
 
 	err := UnmarshalRequest(r, &roomUserIDs)
@@ -126,9 +124,9 @@ func (h *RoomHandler) AddUserToRoom(w http.ResponseWriter, r *http.Request)  {
 }
 
 //RemoveUserFromRoom ...
-func (h *RoomHandler) RemoveUserFromRoom(w http.ResponseWriter, r *http.Request)  {
+func (h *RoomHandler) RemoveUserFromRoom(w http.ResponseWriter, r *http.Request) {
 	var (
-		roomUserIDs models.UserToRoom
+		roomUserIDs models.UsersRooms
 	)
 
 	err := UnmarshalRequest(r, &roomUserIDs)
@@ -145,14 +143,13 @@ func (h *RoomHandler) RemoveUserFromRoom(w http.ResponseWriter, r *http.Request)
 }
 
 //DeleteRoom ...
-func (h *RoomHandler) DeleteRoom(w http.ResponseWriter, r *http.Request)  {
+func (h *RoomHandler) DeleteRoom(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := strconv.Atoi(params["room-id"])
 	if err != nil {
 		SendEmptyResponse(w, http.StatusBadRequest)
 		return
 	}
-
 	if err := h.service.DeleteRoom(r.Context(), id); err != nil {
 		SendEmptyResponse(w, http.StatusInternalServerError)
 		return
