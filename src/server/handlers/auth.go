@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	log "github.com/sirupsen/logrus"
@@ -57,6 +58,26 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	SendResponse(w, http.StatusOK, res)
+}
+
+// SpotifyLogin description should be written later
+func (h *AuthHandler) SpotifyLogin(w http.ResponseWriter, r *http.Request) {
+	authURL := h.service.GetSpotifyAuthUrl(service.MockState)
+
+	http.Redirect(w, r, authURL, http.StatusMovedPermanently)
+}
+
+// SpotifyCallback description should be written later
+func (h *AuthHandler) SpotifyCallback(w http.ResponseWriter, r *http.Request) {
+	email, err := h.service.GetSpotifyData(r)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusIMUsed)
+	}
+
+	respJson := fmt.Sprintf(`{"email": "%s"}`, email)
+
+	SendResponse(w, http.StatusOK, []byte(respJson))
 }
 
 // swagger:operation DELETE /logout auth logout

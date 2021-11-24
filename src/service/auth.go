@@ -4,6 +4,8 @@ import (
 	"context"
 	"crypto/rand"
 	"encoding/base64"
+	"github.com/zmb3/spotify/v2"
+	"net/http"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -15,7 +17,10 @@ import (
 	"github.com/nure-mates/api/src/models"
 )
 
-const hoursInDay = 24
+const (
+	hoursInDay = 24
+	MockState  = "state"
+)
 
 var (
 	issMap = map[string]struct{}{
@@ -69,6 +74,27 @@ func (s *Service) Login(ctx context.Context, loginReq models.LoginRequest) (resp
 	}
 
 	return resp, err
+}
+
+func (s *Service) GetSpotifyData(r *http.Request) (string, error) {
+	token, err := s.spotifyAuth.Token(r.Context(), MockState, r)
+	if err != nil {
+		log.Errorf("failed to get token: %v", err)
+		return "", errors.New("couldn't get token")
+	}
+
+	client := spotify.New(s.spotifyAuth.Client(r.Context(), token))
+	user, err := client.CurrentUser(context.TODO())
+	if err != nil {
+		log.Errorf("failed to get user: %v", err)
+		return "", errors.Wrap(err, "failed to get user")
+	}
+
+	return user.Email, nil
+}
+
+func (s *Service) GetSpotifyAuthUrl(state string) string {
+	return s.spotifyAuth.AuthURL(state)
 }
 
 func (s *Service) Logout(ctx context.Context, accessToken string) (err error) {

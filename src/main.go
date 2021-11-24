@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	spotifyauth "github.com/zmb3/spotify/v2/auth"
 	"os"
 	"os/signal"
 	"strconv"
@@ -49,11 +50,20 @@ func main() {
 		log.WithError(err).Fatal("postgres connection error")
 	}
 
+	spotifyRedirectURL := os.Getenv("REDIRECT_URI")
+	if spotifyRedirectURL == "" {
+		log.WithError(err).Fatal("got empty spotify redirect url")
+	}
+
+	log.Infof("redirect is: %s", spotifyRedirectURL)
+	auth := spotifyauth.New(spotifyauth.WithRedirectURL(spotifyRedirectURL), spotifyauth.WithScopes(spotifyauth.ScopeUserReadEmail))
+
 	srv := service.New(
 		&cfg,
 		db.NewAuthRepo(),
 		db.NewProfileRepo(),
 		db.NewRoomRepo(),
+		auth,
 	)
 
 	httpSrv, err := http.New(

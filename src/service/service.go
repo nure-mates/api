@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	spotifyauth "github.com/zmb3/spotify/v2/auth"
 	"sync"
 
 	"github.com/google/uuid"
@@ -20,6 +21,7 @@ type Service struct {
 	authRepo    AuthRepo
 	profileRepo ProfileRepo
 	roomRepo    RoomRepo
+	spotifyAuth *spotifyauth.Authenticator
 }
 
 func New(
@@ -27,6 +29,7 @@ func New(
 	aur AuthRepo,
 	pr ProfileRepo,
 	rr RoomRepo,
+	authenticator *spotifyauth.Authenticator,
 ) *Service {
 	once.Do(func() {
 		service = &Service{
@@ -34,6 +37,7 @@ func New(
 			authRepo:    aur,
 			profileRepo: pr,
 			roomRepo:    rr,
+			spotifyAuth: authenticator,
 		}
 	})
 
