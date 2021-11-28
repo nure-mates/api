@@ -6,8 +6,8 @@ PKG_PATH := $(or $(PKG),'.')
 PKG_LIST := $(shell go list ${PKG_PATH}/... | grep -v /vendor/)
 GOLINT := golangci-lint
 
-MIGRATE=migrate -path migrations -database postgres://postgres:12345@localhost:5432/mates-db?sslmode=disable
-TEST_MIGRATE=migrate -path migrations  -database postgres://postgres:12345@localhost:5432/mates-db-test?sslmode=disable
+MIGRATE=migrate -path migrations -database postgres://postgres:12345@localhost:5436/mates-db?sslmode=disable
+TEST_MIGRATE=migrate -path migrations  -database postgres://postgres:12345@localhost:5436/mates-db-test?sslmode=disable
 
 check-lint:
 	@which $(GOLINT) || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.41.1
@@ -60,4 +60,4 @@ migrate-down: ## Rollback migrations
 	$(MIGRATE) down
 
 migrate-create: ## Create migration file with name
-	migrate create -ext sql -dir ./migrations -seq -digits 4 "migrate_name"
+	migrate create -ext sql -dir ./migrations -seq -digits 4 $(NAME)

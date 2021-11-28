@@ -27,9 +27,10 @@ type HTTP struct {
 
 type Postgres struct {
 	Host         string        `mapstructure:"HOST"          default:"localhost"`
-	Port         string        `mapstructure:"PORT"          default:"5432"`
+	Port         string        `mapstructure:"PORT"          default:"5436"`
 	Name         string        `mapstructure:"NAME"          default:"mates-db"`
 	User         string        `mapstructure:"USER"          default:"postgres"`
+	SSLMode      bool          `mapstructure:"SSL_MODE" default:"false"`
 	Password     string        `mapstructure:"PASSWORD"      default:"12345"`
 	PoolSize     int           `mapstructure:"POOL_SIZE"     default:"10"`
 	MaxRetries   int           `mapstructure:"MAX_RETRIES"   default:"5"`

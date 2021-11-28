@@ -3,6 +3,7 @@ package http
 import (
 	"context"
 	"fmt"
+	middleware "github.com/nure-mates/api/src/server/http/middlewares"
 	"net/http"
 	"sync"
 	"time"
@@ -15,7 +16,7 @@ import (
 
 	"github.com/nure-mates/api/src/config"
 	"github.com/nure-mates/api/src/server/handlers"
-	middleware "github.com/nure-mates/api/src/server/http/middlewares"
+	//middleware "github.com/nure-mates/api/src/server/http/middlewares"
 
 	healthcheck "github.com/nure-mates/api/src/server/health-check"
 )
@@ -32,11 +33,13 @@ type Server struct {
 	config *config.HTTP
 
 	// handlers
-	auh *handlers.AuthHandler
+	auh  *handlers.AuthHandler
+	room *handlers.RoomHandler
 }
 
 func New(cfg *config.HTTP,
 	authHandler *handlers.AuthHandler,
+	roomHandler *handlers.RoomHandler,
 ) (*Server, error) {
 	httpSrv := http.Server{
 		Addr: fmt.Sprintf(":%d", cfg.Port),
@@ -46,6 +49,7 @@ func New(cfg *config.HTTP,
 	srv := Server{
 		config: cfg,
 		auh:    authHandler,
+		room:   roomHandler,
 	}
 
 	if err := srv.setupHTTP(&httpSrv); err != nil {
@@ -74,7 +78,7 @@ func (s *Server) buildHandler() (http.Handler, error) {
 		serviceRouter = router.PathPrefix(s.config.URLPrefix).Subrouter()
 		v1Router      = serviceRouter.PathPrefix(version1).Subrouter()
 
-		publicChain  = alice.New()
+		publicChain = alice.New()
 		privateChain = publicChain.
 				Append(middleware.Auth)
 	)
@@ -85,7 +89,16 @@ func (s *Server) buildHandler() (http.Handler, error) {
 	v1Router.Handle("/spotify-login", publicChain.ThenFunc(s.auh.SpotifyLogin)).Methods(http.MethodGet)
 	v1Router.Handle("/callback", publicChain.ThenFunc(s.auh.SpotifyCallback)).Methods(http.MethodGet)
 	v1Router.Handle("/token", publicChain.ThenFunc(s.auh.TokenRefresh)).Methods(http.MethodPost)
-
+	// rooms routers
+	v1Router.Handle("/create-room", publicChain.ThenFunc(s.room.CreateRoom)).Methods(http.MethodPost)
+	v1Router.Handle("/get-room/{room-id}", publicChain.ThenFunc(s.room.GetRoom)).Methods(http.MethodGet)
+	v1Router.Handle("/update-room", publicChain.ThenFunc(s.room.UpdateRoom)).Methods(http.MethodPut)
+	v1Router.Handle("/delete-room/{room-id}", publicChain.ThenFunc(s.room.DeleteRoom)).Methods(http.MethodDelete)
+	v1Router.Handle("/get-user-rooms/{user-id}", publicChain.ThenFunc(s.room.GetUserRooms)).Methods(http.MethodGet)
+	v1Router.Handle("/rooms/{user-id}", publicChain.ThenFunc(s.room.GetAvailableRooms)).Methods(http.MethodGet)
+	v1Router.Handle("/room", publicChain.ThenFunc(s.room.AddUserToRoom)).Methods(http.MethodPut)
+	v1Router.Handle("/remove-user-room", publicChain.ThenFunc(s.room.RemoveUserFromRoom)).Methods(http.MethodDelete)
+	v1Router.Handle("/delete-room/{room-id}", publicChain.ThenFunc(s.room.DeleteRoom)).Methods(http.MethodDelete)
 	// private routes
 	v1Router.Handle("/logout", privateChain.ThenFunc(s.auh.Logout)).Methods(http.MethodDelete)
 

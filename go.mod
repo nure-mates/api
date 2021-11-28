@@ -16,7 +16,7 @@ require (
 	github.com/uptrace/bun v1.0.15
 	github.com/uptrace/bun/dialect/pgdialect v1.0.15
 	github.com/uptrace/bun/driver/pgdriver v1.0.15
-	github.com/zmb3/spotify/v2 v2.0.0 // indirect
+	github.com/zmb3/spotify/v2 v2.0.0
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8 // indirect
 	google.golang.org/api v0.54.0
 )

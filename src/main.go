@@ -28,10 +28,11 @@ func main() {
 	}
 
 	// init heroku port
-	port, err := strconv.Atoi(os.Getenv("PORT"))
-	if err != nil {
-		log.WithError(err).Fatal("no port os var")
-	}
+		port, err := strconv.Atoi(os.Getenv("PORT"))
+		if err != nil {
+			log.WithError(err).Fatal("no port os var")
+		}
+
 	cfg.HTTPConfig.Port = port
 
 	// init logger
@@ -44,7 +45,6 @@ func main() {
 	setupGracefulShutdown(cancel)
 
 	var wg = &sync.WaitGroup{}
-
 	db, err := postgres.New(ctx, wg, &cfg.PostgresCfg)
 	if err != nil {
 		log.WithError(err).Fatal("postgres connection error")
@@ -62,12 +62,14 @@ func main() {
 		&cfg,
 		db.NewAuthRepo(),
 		db.NewProfileRepo(),
+		db.NewRoomRepo(),
 		auth,
 	)
 
 	httpSrv, err := http.New(
 		&cfg.HTTPConfig,
 		handlers.NewAuthHandler(srv),
+		handlers.NewRoomHandler(srv),
 	)
 
 	if err != nil {
