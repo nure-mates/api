@@ -27,7 +27,7 @@ type HTTP struct {
 
 type Postgres struct {
 	Host         string        `mapstructure:"HOST"          default:"localhost"`
-	Port         string        `mapstructure:"PORT"          default:"5436"`
+	Port         string        `mapstructure:"PORT"          default:"5432"`
 	Name         string        `mapstructure:"NAME"          default:"mates-db"`
 	User         string        `mapstructure:"USER"          default:"postgres"`
 	SSLMode      bool          `mapstructure:"SSL_MODE" default:"false"`
