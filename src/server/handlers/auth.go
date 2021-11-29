@@ -47,12 +47,14 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 
 	err := UnmarshalRequest(r, req)
 	if err != nil {
+		log.Errorf("Failed to unmarshal request: %v", err)
 		SendEmptyResponse(w, http.StatusBadRequest)
 		return
 	}
 
 	res, err := h.service.Login(r.Context(), *req)
 	if err != nil {
+		log.Errorf("Failed to login user: %v", err)
 		SendEmptyResponse(w, http.StatusInternalServerError)
 		return
 	}
