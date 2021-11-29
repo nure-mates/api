@@ -28,10 +28,10 @@ func main() {
 	}
 
 	// init heroku port
-		port, err := strconv.Atoi(os.Getenv("PORT"))
-		if err != nil {
-			log.WithError(err).Fatal("no port os var")
-		}
+	port, err := strconv.Atoi(os.Getenv("PORT"))
+	if err != nil {
+		log.WithError(err).Fatal("no port os var")
+	}
 
 	cfg.HTTPConfig.Port = port
 

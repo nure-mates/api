@@ -3,7 +3,7 @@ BEGIN;
 CREATE TABLE rooms (
     "id" bigserial primary key,
     name varchar(40),
-    host_id bigserial
+    host_id varchar
 );
 
 CREATE TABLE users_rooms (

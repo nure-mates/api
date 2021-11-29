@@ -78,7 +78,7 @@ func (s *Server) buildHandler() (http.Handler, error) {
 		serviceRouter = router.PathPrefix(s.config.URLPrefix).Subrouter()
 		v1Router      = serviceRouter.PathPrefix(version1).Subrouter()
 
-		publicChain = alice.New()
+		publicChain  = alice.New()
 		privateChain = publicChain.
 				Append(middleware.Auth)
 	)

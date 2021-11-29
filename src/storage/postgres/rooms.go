@@ -29,7 +29,6 @@ func (r *RoomRepo) CreateRoom(ctx context.Context, room *models.Room) error {
 	return err
 }
 
-
 func (r *RoomRepo) GetUserRooms(ctx context.Context, userID int) ([]models.Room, error) {
 	var rooms []models.Room
 
