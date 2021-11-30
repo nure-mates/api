@@ -113,6 +113,7 @@ func (r *RoomRepo) GetAvailableRooms(ctx context.Context, userID int) ([]models.
 func (r *RoomRepo) UpdateRoom(ctx context.Context, room *models.Room) error {
 	if _, err := r.DB.NewUpdate().
 		Model(room).
+		OmitZero().
 		Where("id = ?", room.ID).
 		Exec(ctx); err != nil {
 		return err
