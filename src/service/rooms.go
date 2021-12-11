@@ -117,6 +117,11 @@ func (s *Service) CheckRoom(ctx context.Context, roomID int) (bool, error) {
 	return empty, err
 }
 
+func (s *Service) GetPublicRooms(ctx context.Context) ([]models.Room, error) {
+	rooms, err := s.roomRepo.GetPublicRooms(ctx)
+	return rooms, err
+}
+
 func (s *Service) getUsersInRoom(ctx context.Context, roomID int) ([]models.UsersRooms, error) {
 	users, err := s.roomRepo.GetUsersInRoom(ctx, roomID)
 	return users, err

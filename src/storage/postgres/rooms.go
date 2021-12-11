@@ -144,6 +144,12 @@ func (r *RoomRepo) GetUsersInRoom(ctx context.Context, id int) ([]models.UsersRo
 	return users, nil
 }
 
+func (r *RoomRepo) GetPublicRooms(ctx context.Context) ([]models.Room, error) {
+	var rooms []models.Room
+	err := r.DB.NewSelect().Model(&rooms).Where("public = ?", true).Scan(ctx)
+	return rooms, err
+}
+
 func (r *RoomRepo) GetUser(ctx context.Context, id int) (*models.User, error) {
 	var user *models.User
 	err := r.DB.NewSelect().Model(user).Where("id = ?", id).Scan(ctx)

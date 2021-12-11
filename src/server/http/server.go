@@ -95,6 +95,7 @@ func (s *Server) buildHandler() (http.Handler, error) {
 	v1Router.Handle("/update-room", publicChain.ThenFunc(s.room.UpdateRoom)).Methods(http.MethodPut)
 	v1Router.Handle("/delete-room/{room-id}", publicChain.ThenFunc(s.room.DeleteRoom)).Methods(http.MethodDelete)
 	v1Router.Handle("/get-user-rooms/{user-id}", publicChain.ThenFunc(s.room.GetUserRooms)).Methods(http.MethodGet)
+	v1Router.Handle("/public-rooms", publicChain.ThenFunc(s.room.GetPublicRooms)).Methods(http.MethodGet)
 	v1Router.Handle("/rooms/{user-id}", publicChain.ThenFunc(s.room.GetAvailableRooms)).Methods(http.MethodGet)
 	v1Router.Handle("/room", publicChain.ThenFunc(s.room.AddUserToRoom)).Methods(http.MethodPut)
 	v1Router.Handle("/remove-user-room", publicChain.ThenFunc(s.room.RemoveUserFromRoom)).Methods(http.MethodDelete)

@@ -5,6 +5,7 @@ type Room struct {
 	Name      string `json:"name"`
 	HostID    int    `json:"host_id"`
 	UserCount int    `json:"user_count" bun:"-"`
+	Public    bool   `json:"public"`
 	Users     []User `bun:"m2m:users_rooms,join:User=Room"`
 }
 
