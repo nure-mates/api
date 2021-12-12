@@ -1,3 +1,5 @@
 BEGIN;
+
 DROP TABLE tracks;
+
 END;
