@@ -3,10 +3,11 @@ package http
 import (
 	"context"
 	"fmt"
-	middleware "github.com/nure-mates/api/src/server/http/middlewares"
 	"net/http"
 	"sync"
 	"time"
+
+	middleware "github.com/nure-mates/api/src/server/http/middlewares"
 
 	"github.com/gorilla/mux"
 	"github.com/justinas/alice"
@@ -16,6 +17,7 @@ import (
 
 	"github.com/nure-mates/api/src/config"
 	"github.com/nure-mates/api/src/server/handlers"
+
 	//middleware "github.com/nure-mates/api/src/server/http/middlewares"
 
 	healthcheck "github.com/nure-mates/api/src/server/health-check"
@@ -33,13 +35,15 @@ type Server struct {
 	config *config.HTTP
 
 	// handlers
-	auh  *handlers.AuthHandler
-	room *handlers.RoomHandler
+	auh   *handlers.AuthHandler
+	room  *handlers.RoomHandler
+	track *handlers.TrackHandler
 }
 
 func New(cfg *config.HTTP,
 	authHandler *handlers.AuthHandler,
 	roomHandler *handlers.RoomHandler,
+	trackHandler *handlers.TrackHandler,
 ) (*Server, error) {
 	httpSrv := http.Server{
 		Addr: fmt.Sprintf(":%d", cfg.Port),
@@ -50,6 +54,7 @@ func New(cfg *config.HTTP,
 		config: cfg,
 		auh:    authHandler,
 		room:   roomHandler,
+		track:  trackHandler,
 	}
 
 	if err := srv.setupHTTP(&httpSrv); err != nil {
@@ -100,6 +105,8 @@ func (s *Server) buildHandler() (http.Handler, error) {
 	v1Router.Handle("/room", publicChain.ThenFunc(s.room.AddUserToRoom)).Methods(http.MethodPut)
 	v1Router.Handle("/remove-user-room", publicChain.ThenFunc(s.room.RemoveUserFromRoom)).Methods(http.MethodDelete)
 	v1Router.Handle("/delete-room/{room-id}", publicChain.ThenFunc(s.room.DeleteRoom)).Methods(http.MethodDelete)
+	// tracks
+	v1Router.Handle("/tracks", publicChain.ThenFunc(s.track.AddTrack)).Methods(http.MethodPost)
 	// private routes
 	v1Router.Handle("/logout", privateChain.ThenFunc(s.auh.Logout)).Methods(http.MethodDelete)
 

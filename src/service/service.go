@@ -2,8 +2,9 @@ package service
 
 import (
 	"context"
-	spotifyauth "github.com/zmb3/spotify/v2/auth"
 	"sync"
+
+	spotifyauth "github.com/zmb3/spotify/v2/auth"
 
 	"github.com/google/uuid"
 
@@ -20,6 +21,7 @@ type Service struct {
 	cfg         *config.Config
 	authRepo    AuthRepo
 	profileRepo ProfileRepo
+	trackRepo   TrackRepo
 	roomRepo    RoomRepo
 	spotifyAuth *spotifyauth.Authenticator
 }
@@ -28,6 +30,7 @@ func New(
 	cfg *config.Config,
 	aur AuthRepo,
 	pr ProfileRepo,
+	tr TrackRepo,
 	rr RoomRepo,
 	authenticator *spotifyauth.Authenticator,
 ) *Service {
@@ -37,6 +40,7 @@ func New(
 			authRepo:    aur,
 			profileRepo: pr,
 			roomRepo:    rr,
+			trackRepo:   tr,
 			spotifyAuth: authenticator,
 		}
 	})
@@ -72,4 +76,8 @@ type RoomRepo interface {
 	CheckRoom(ctx context.Context, id int) (bool, error)
 	GetUsersInRoom(ctx context.Context, roomID int) ([]models.UsersRooms, error)
 	GetPublicRooms(ctx context.Context) ([]models.Room, error)
+}
+
+type TrackRepo interface {
+	AddTrack(ctx context.Context, track *models.Track) error
 }

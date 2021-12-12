@@ -2,13 +2,14 @@ package main
 
 import (
 	"context"
-	spotifyauth "github.com/zmb3/spotify/v2/auth"
 	"os"
 	"os/signal"
 	"strconv"
 	"strings"
 	"sync"
 	"syscall"
+
+	spotifyauth "github.com/zmb3/spotify/v2/auth"
 
 	"github.com/nure-mates/api/src/server/handlers"
 	"github.com/nure-mates/api/src/service"
@@ -62,6 +63,7 @@ func main() {
 		&cfg,
 		db.NewAuthRepo(),
 		db.NewProfileRepo(),
+		db.NewTrackRepo(),
 		db.NewRoomRepo(),
 		auth,
 	)
@@ -70,6 +72,7 @@ func main() {
 		&cfg.HTTPConfig,
 		handlers.NewAuthHandler(srv),
 		handlers.NewRoomHandler(srv),
+		handlers.NewTrackHandler(srv),
 	)
 
 	if err != nil {

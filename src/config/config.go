@@ -25,7 +25,6 @@ type HTTP struct {
 	CORSAllowedHost   []string `mapstructure:"CORS_ALLOWED_HOST"  default:"*"`
 }
 
-
 //Postgres ...
 type Postgres struct {
 	Host         string        `mapstructure:"HOST"          default:"ec2-54-73-152-36.eu-west-1.compute.amazonaws.com"`
