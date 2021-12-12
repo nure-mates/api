@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"strconv"
 
+	log "github.com/sirupsen/logrus"
+
 	"github.com/nure-mates/api/src/models"
 	"github.com/nure-mates/api/src/service"
 )
@@ -38,6 +40,8 @@ func (h *TrackHandler) AddTrack(w http.ResponseWriter, r *http.Request) {
 		TrackURL: req.TrackURL,
 		AddedBy:  id,
 	}
+
+	log.Printf("User is is %d\n", id)
 
 	if err := h.service.AddTrack(r.Context(), &track); err != nil {
 		SendEmptyResponse(w, http.StatusInternalServerError)
