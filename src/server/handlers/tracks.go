@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/nure-mates/api/src/models"
 	"github.com/nure-mates/api/src/service"
@@ -26,16 +27,16 @@ func (h *TrackHandler) AddTrack(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//userID := r.Header.Get(models.UserIDHeaderName)
-	//id, err := strconv.Atoi(userID)
-	//if err != nil {
-	//	SendEmptyResponse(w, http.StatusBadRequest)
-	//	return
-	//}
+	userID := r.Header.Get(models.UserIDHeaderName)
+	id, err := strconv.Atoi(userID)
+	if err != nil {
+		SendEmptyResponse(w, http.StatusBadRequest)
+		return
+	}
 
 	track := models.Track{
 		TrackURL: req.TrackURL,
-		AddedBy:  10,
+		AddedBy:  id,
 	}
 
 	if err := h.service.AddTrack(r.Context(), &track); err != nil {
