@@ -17,6 +17,42 @@
   },
   "basePath": "/api/v1",
   "paths": {
+    "/create-room": {
+      "post": {
+        "description": "create a room",
+        "tags": [
+          "rooms"
+        ],
+        "operationId": "create_room",
+        "parameters": [
+          {
+            "name": "create_room_request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateRoomRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ValidationErr"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/CommonError"
+            }
+          }
+        }
+      }
+    },
     "/login": {
       "post": {
         "description": "create a session and obtain tokens pair",
@@ -133,6 +169,25 @@
       },
       "x-go-package": "github.com/nure-mates/api/src/docs"
     },
+    "CreateRoomRequest": {
+      "type": "object",
+      "properties": {
+        "host_id": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "HostID"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "public": {
+          "type": "boolean",
+          "x-go-name": "Public"
+        }
+      },
+      "x-go-package": "github.com/nure-mates/api/src/models"
+    },
     "LoginRequest": {
       "type": "object",
       "properties": {
@@ -151,6 +206,41 @@
         },
         "user": {
           "$ref": "#/definitions/User"
+        }
+      },
+      "x-go-package": "github.com/nure-mates/api/src/models"
+    },
+    "Room": {
+      "type": "object",
+      "properties": {
+        "Users": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/User"
+          }
+        },
+        "host_id": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "HostID"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ID"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "public": {
+          "type": "boolean",
+          "x-go-name": "Public"
+        },
+        "user_count": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "UserCount"
         }
       },
       "x-go-package": "github.com/nure-mates/api/src/models"

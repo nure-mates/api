@@ -20,5 +20,6 @@ func (r *TrackRepo) AddTrack(ctx context.Context, track *models.Track) error {
 		Model(track).
 		Returning("id").
 		Exec(ctx)
+
 	return err
 }

@@ -16,3 +16,10 @@ type LoginResponse struct {
 	TokenPair TokenPair `json:"tokens_pair"`
 	User      User      `json:"user"`
 }
+
+// swagger:model
+type CreateRoomRequest struct {
+	Name   string `json:"name"`
+	HostID int    `json:"host_id"`
+	Public bool   `json:"public"`
+}

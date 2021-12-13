@@ -20,6 +20,8 @@ const (
 	AccessTokenHeader = "Authorization"
 	BearerSchema      = "Bearer"
 	BasicSchema       = "Basic"
+
+	headerForPrivateRoom = "Private-Room-Token"
 )
 
 // HandleRequest reads all bytes from request and closes it to prevent memory leaks.

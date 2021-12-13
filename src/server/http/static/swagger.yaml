@@ -9,6 +9,20 @@ definitions:
         x-go-name: Code
     type: object
     x-go-package: github.com/nure-mates/api/src/docs
+  CreateRoomRequest:
+    properties:
+      host_id:
+        format: int64
+        type: integer
+        x-go-name: HostID
+      name:
+        type: string
+        x-go-name: Name
+      public:
+        type: boolean
+        x-go-name: Public
+    type: object
+    x-go-package: github.com/nure-mates/api/src/models
   LoginRequest:
     properties:
       id_token:
@@ -22,6 +36,32 @@ definitions:
         $ref: '#/definitions/TokenPair'
       user:
         $ref: '#/definitions/User'
+    type: object
+    x-go-package: github.com/nure-mates/api/src/models
+  Room:
+    properties:
+      Users:
+        items:
+          $ref: '#/definitions/User'
+        type: array
+      host_id:
+        format: int64
+        type: integer
+        x-go-name: HostID
+      id:
+        format: int64
+        type: integer
+        x-go-name: ID
+      name:
+        type: string
+        x-go-name: Name
+      public:
+        type: boolean
+        x-go-name: Public
+      user_count:
+        format: int64
+        type: integer
+        x-go-name: UserCount
     type: object
     x-go-package: github.com/nure-mates/api/src/models
   TokenPair:
@@ -73,6 +113,29 @@ info:
   title: NURE API.
   version: 0.0.1
 paths:
+  /create-room:
+    post:
+      description: create a room
+      operationId: create_room
+      parameters:
+      - in: body
+        name: create_room_request
+        required: true
+        schema:
+          $ref: '#/definitions/CreateRoomRequest'
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ValidationErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/CommonError'
+      tags:
+      - rooms
   /login:
     post:
       description: create a session and obtain tokens pair
