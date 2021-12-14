@@ -156,8 +156,9 @@ func (h *RoomHandler) GetAvailableRooms(w http.ResponseWriter, r *http.Request) 
 
 		return
 	}
-
-	SendResponse(w, http.StatusOK, rooms)
+	resp := make(map[string]interface{})
+	resp["rooms"] = rooms
+	SendResponse(w, http.StatusOK, resp)
 }
 
 //AddUserToRoom ...
