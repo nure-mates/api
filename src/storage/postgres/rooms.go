@@ -160,7 +160,6 @@ func (r *RoomRepo) GetPublicRooms(ctx context.Context) ([]models.Room, error) {
 	var rooms []models.Room
 
 	err := r.DB.NewSelect().Model(&rooms).Where("public = ?", true).Scan(ctx)
-
 	return rooms, err
 }
 

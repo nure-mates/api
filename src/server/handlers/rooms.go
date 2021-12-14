@@ -132,8 +132,8 @@ func (h *RoomHandler) GetUserRooms(w http.ResponseWriter, r *http.Request) {
 func (h *RoomHandler) GetPublicRooms(w http.ResponseWriter, r *http.Request) {
 	rooms, err := h.service.GetPublicRooms(r.Context())
 	if err != nil {
+		SendHTTPError(w, err)
 		SendEmptyResponse(w, http.StatusInternalServerError)
-
 		return
 	}
 
