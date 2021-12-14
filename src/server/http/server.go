@@ -94,7 +94,7 @@ func (s *Server) buildHandler() (http.Handler, error) {
 	v1Router.Handle("/token", publicChain.ThenFunc(s.auh.TokenRefresh)).Methods(http.MethodPost)
 	// rooms routers
 	v1Router.Handle("/create-room", publicChain.ThenFunc(s.room.CreateRoom)).Methods(http.MethodPost)
-	v1Router.Handle("/get-room/{room-id}", privateChain.ThenFunc(s.room.GetRoom)).Methods(http.MethodGet)
+	v1Router.Handle("/get-room/{room-id}", publicChain.ThenFunc(s.room.GetRoom)).Methods(http.MethodGet)
 	v1Router.Handle("/update-room", publicChain.ThenFunc(s.room.UpdateRoom)).Methods(http.MethodPut)
 	v1Router.Handle("/delete-room/{room-id}", publicChain.ThenFunc(s.room.DeleteRoom)).Methods(http.MethodDelete)
 	v1Router.Handle("/get-user-rooms/{user-id}", publicChain.ThenFunc(s.room.GetUserRooms)).Methods(http.MethodGet)

@@ -70,7 +70,6 @@ func (h *RoomHandler) GetRoom(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(params["room-id"])
 	if err != nil {
 		SendEmptyResponse(w, http.StatusBadRequest)
-
 		return
 	}
 
