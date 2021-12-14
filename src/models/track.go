@@ -8,4 +8,5 @@ type Track struct {
 	ID       int
 	TrackURL string
 	AddedBy  int
+	RoomID   int
 }
