@@ -48,6 +48,7 @@ func (r *RoomRepo) GetRoom(ctx context.Context, id int) (*models.Room, error) {
 	var room models.Room
 	if err := r.DB.NewSelect().
 		Model(&room).
+		Relation("Tracks").
 		Where("id = ?", id).
 		Scan(ctx); err != nil {
 		return nil, err

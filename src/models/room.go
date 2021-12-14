@@ -12,8 +12,9 @@ type Room struct {
 	Public bool   `json:"public"`
 	Token  string `json:"token"`
 
-	UserCount int    `json:"user_count" bun:"-"`
-	Users     []User `bun:"m2m:users_rooms,join:User=Room"`
+	UserCount int     `json:"user_count" bun:"-"`
+	Users     []User  `bun:"m2m:users_rooms,join:User=Room"`
+	Tracks    []Track `bun:"rel:has-many,join:id=room_id"`
 }
 
 type UsersRooms struct {
