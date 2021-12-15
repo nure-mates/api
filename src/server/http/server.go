@@ -83,7 +83,7 @@ func (s *Server) buildHandler() (http.Handler, error) {
 
 		publicChain  = alice.New()
 		privateChain = publicChain.
-				Append(middleware.Auth)
+			Append(middleware.Auth)
 	)
 
 	// public routes
@@ -104,7 +104,7 @@ func (s *Server) buildHandler() (http.Handler, error) {
 	v1Router.Handle("/remove-user-room", publicChain.ThenFunc(s.room.RemoveUserFromRoom)).Methods(http.MethodDelete)
 	v1Router.Handle("/delete-room/{room-id}", publicChain.ThenFunc(s.room.DeleteRoom)).Methods(http.MethodDelete)
 	// tracks
-	v1Router.Handle("/tracks", privateChain.ThenFunc(s.track.AddTrack)).Methods(http.MethodPost)
+	v1Router.Handle("/tracks", publicChain.ThenFunc(s.track.AddTrack)).Methods(http.MethodPost)
 	// private routes
 	v1Router.Handle("/logout", privateChain.ThenFunc(s.auh.Logout)).Methods(http.MethodDelete)
 
