@@ -2,8 +2,8 @@ package handlers
 
 import (
 	"net/http"
-	"strconv"
 
+	"github.com/nure-mates/api/src/context"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/nure-mates/api/src/models"
@@ -25,25 +25,22 @@ func (h *TrackHandler) AddTrack(w http.ResponseWriter, r *http.Request) {
 
 	err := UnmarshalRequest(r, req)
 	if err != nil {
+		log.Errorf("failed to unmarshal request: %v", err)
 		SendEmptyResponse(w, http.StatusBadRequest)
 		return
 	}
 
-	userID := r.Header.Get(models.UserIDHeaderName)
-	id, err := strconv.Atoi(userID)
-	if err != nil {
-		SendEmptyResponse(w, http.StatusBadRequest)
-		return
-	}
+	id := context.GetUserID(r.Context())
 
 	track := models.Track{
 		TrackURL: req.TrackURL,
 		AddedBy:  id,
 	}
 
-	log.Printf("User is is %d\n", id)
+	log.Printf("User is %d\n", id)
 
-	if err := h.service.AddTrack(r.Context(), &track); err != nil {
+	if err = h.service.AddTrack(r.Context(), &track); err != nil {
+		log.Errorf("failed to add track: %v", err)
 		SendEmptyResponse(w, http.StatusInternalServerError)
 		return
 	}
