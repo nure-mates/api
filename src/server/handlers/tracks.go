@@ -35,13 +35,14 @@ func (h *TrackHandler) AddTrack(w http.ResponseWriter, r *http.Request) {
 	track := models.Track{
 		TrackURL: req.TrackURL,
 		AddedBy:  id,
+		RoomID:   req.RoomID,
 	}
 
 	log.Printf("User is %d\n", id)
 
 	if err = h.service.AddTrack(r.Context(), &track); err != nil {
 		log.Errorf("failed to add track: %v", err)
-		SendEmptyResponse(w, http.StatusInternalServerError)
+		SendResponse(w, http.StatusBadRequest, err)
 		return
 	}
 
