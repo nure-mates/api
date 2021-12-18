@@ -103,6 +103,7 @@ func (s *Server) buildHandler() (http.Handler, error) {
 	v1Router.Handle("/room", publicChain.ThenFunc(s.room.AddUserToRoom)).Methods(http.MethodPut)
 	v1Router.Handle("/remove-user-room", publicChain.ThenFunc(s.room.RemoveUserFromRoom)).Methods(http.MethodDelete)
 	v1Router.Handle("/delete-room/{room-id}", publicChain.ThenFunc(s.room.DeleteRoom)).Methods(http.MethodDelete)
+	v1Router.Handle("/join-room/{token}", privateChain.ThenFunc(s.room.JoinToRoom)).Methods(http.MethodGet)
 	// tracks
 	v1Router.Handle("/tracks", privateChain.ThenFunc(s.track.AddTrack)).Methods(http.MethodPost)
 	// private routes

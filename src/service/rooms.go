@@ -172,3 +172,17 @@ func (s *Service) getUsersInRoom(ctx context.Context, roomID int) ([]models.User
 
 	return users, err
 }
+
+func (s *Service) JoinToRoom(ctx context.Context, token string, userID int) error {
+	roomID, err := s.roomRepo.GetRoomIDViaToken(ctx, token)
+	if err != nil {
+		return err
+	}
+
+	err = s.AddUserToRoom(ctx, roomID, userID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

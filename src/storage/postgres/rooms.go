@@ -173,3 +173,17 @@ func (r *RoomRepo) GetUser(ctx context.Context, id int) (*models.User, error) {
 
 	return user, nil
 }
+
+func (r *RoomRepo) GetRoomIDViaToken(ctx context.Context, token string) (int, error) {
+	var res int
+
+	err := r.DB.NewSelect().
+		Model((*models.Room)(nil)).
+		Where("token = ?", token).
+		Scan(ctx, &res)
+	if err != nil {
+		return 0, err
+	}
+
+	return res, nil
+}
