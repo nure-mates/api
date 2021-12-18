@@ -173,16 +173,37 @@ func (s *Service) getUsersInRoom(ctx context.Context, roomID int) ([]models.User
 	return users, err
 }
 
-func (s *Service) JoinToRoom(ctx context.Context, token string, userID int) error {
+func (s *Service) JoinToRoom(ctx context.Context, token string, userID int) (*models.Room, error) {
 	roomID, err := s.roomRepo.GetRoomIDViaToken(ctx, token)
 	if err != nil {
-		return err
+		return &models.Room{}, err
 	}
 
-	err = s.AddUserToRoom(ctx, roomID, userID)
+	userExists := false
+
+	usersRoom, err := s.roomRepo.GetUsersInRoom(ctx, roomID)
 	if err != nil {
-		return err
+		return &models.Room{}, err
 	}
 
-	return nil
+	for _, userRoom := range usersRoom {
+		if userRoom.UserID == userID {
+			userExists = true
+			break
+		}
+	}
+
+	if !userExists {
+		err = s.AddUserToRoom(ctx, roomID, userID)
+		if err != nil {
+			return &models.Room{}, err
+		}
+	}
+
+	resp, err := s.GetRoom(ctx, roomID, userID)
+	if err != nil {
+		return &models.Room{}, err
+	}
+
+	return resp, nil
 }

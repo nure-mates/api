@@ -232,11 +232,11 @@ func (h *RoomHandler) JoinToRoom(w http.ResponseWriter, r *http.Request) {
 
 	userID := context.GetUserID(r.Context())
 
-	err := h.service.JoinToRoom(r.Context(), token, userID)
+	resp, err := h.service.JoinToRoom(r.Context(), token, userID)
 	if err != nil {
 		SendEmptyResponse(w, http.StatusInternalServerError)
 		return
 	}
 
-	SendEmptyResponse(w, http.StatusOK)
+	SendResponse(w, http.StatusOK, resp)
 }
