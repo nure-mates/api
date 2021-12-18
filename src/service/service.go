@@ -76,6 +76,7 @@ type RoomRepo interface {
 	CheckRoom(ctx context.Context, id int) (bool, error)
 	GetUsersInRoom(ctx context.Context, roomID int) ([]models.UsersRooms, error)
 	GetPublicRooms(ctx context.Context) ([]models.Room, error)
+	GetRoomIDViaToken(ctx context.Context, token string) (int, error)
 }
 
 type TrackRepo interface {

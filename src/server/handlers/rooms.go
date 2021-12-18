@@ -223,3 +223,19 @@ func (h *RoomHandler) DeleteRoom(w http.ResponseWriter, r *http.Request) {
 
 	SendEmptyResponse(w, http.StatusOK)
 }
+
+//JoinToRoom ...
+func (h *RoomHandler) JoinToRoom(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	token := params["token"]
+
+	userID := context.GetUserID(r.Context())
+
+	err := h.service.JoinToRoom(r.Context(), token, userID)
+	if err != nil {
+		SendEmptyResponse(w, http.StatusInternalServerError)
+		return
+	}
+
+	SendEmptyResponse(w, http.StatusOK)
+}
