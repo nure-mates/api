@@ -9,7 +9,7 @@ type Room struct {
 	ID     int    `json:"id"`
 	Name   string `json:"name"`
 	HostID int    `json:"host_id"`
-	Public bool   `json:"public" bun:"-"`
+	Public bool   `json:"public"`
 	Token  string `json:"invite_token"`
 
 	UserCount int     `json:"user_count" bun:"-"`
