@@ -93,9 +93,19 @@ func (s *Service) GetUserRooms(ctx context.Context, userID int) ([]models.Room, 
 }
 
 func (s *Service) AddUserToRoom(ctx context.Context, roomID, userID int) error {
+	room, err := s.roomRepo.GetRoom(ctx, roomID)
+	if err != nil {
+		log.Errorf("add user %d to room %d: %v", userID, roomID, err)
+		return err
+	}
+
+	if room.MaxUsers <= room.UserCount+1 {
+		log.Errorf("max user count in %d room", room.ID)
+		return err
+	}
+
 	if err := s.roomRepo.AddUserToRoom(ctx, roomID, userID); err != nil {
 		log.Errorf("add user %d to room %d: %v", userID, roomID, err)
-
 		return err
 	}
 
