@@ -157,7 +157,14 @@ func (s *Service) GetAvailableRooms(ctx context.Context, userID int) ([]models.R
 
 func (s *Service) UpdateRoom(ctx context.Context, room *models.Room) error {
 	if room.Public != nil && !*room.Public {
+		token, err := generateRandomString(models.TokenLenForRoom)
+		if err != nil {
+			log.Errorf("failed to create token: %v", err)
 
+			return err
+		}
+
+		room.Token = token
 	}
 
 	if room.Public != nil && *room.Public {
