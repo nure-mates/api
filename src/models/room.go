@@ -11,7 +11,7 @@ type Room struct {
 	HostID    int     `json:"host_id"`
 	Auto      bool    `json:"auto"`
 	Fixed     int     `json:"fixed_count"`
-	Public    bool    `json:"public"`
+	Public    *bool   `json:"public"`
 	Token     string  `json:"invite_token"`
 	MaxUsers  int     `json:"max_users"`
 	UserCount int     `json:"user_count" bun:"-"`

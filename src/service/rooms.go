@@ -12,7 +12,7 @@ import (
 func (s *Service) CreateRoom(ctx context.Context, room *models.Room) (*models.Room, error) {
 	var err error
 
-	if !room.Public {
+	if !*room.Public {
 		room.Token, err = generateRandomString(models.TokenLenForRoom)
 		if err != nil {
 			log.Errorf("failed to create token: %v", err)
@@ -156,6 +156,14 @@ func (s *Service) GetAvailableRooms(ctx context.Context, userID int) ([]models.R
 }
 
 func (s *Service) UpdateRoom(ctx context.Context, room *models.Room) error {
+	if room.Public != nil && !*room.Public {
+
+	}
+
+	if room.Public != nil && *room.Public {
+		room.Token = ""
+	}
+
 	if err := s.roomRepo.UpdateRoom(ctx, room); err != nil {
 		log.Errorf("update room %s, %d: %v", room.Name, room.ID, err)
 
